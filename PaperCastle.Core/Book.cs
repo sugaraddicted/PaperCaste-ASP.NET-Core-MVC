@@ -14,6 +14,7 @@ namespace PaperCastle.Core
         public Author Author { get; set; }  
         public Country Country { get; set; }    
         public ICollection<Genre> Genres { get; set; }
+        public ICollection<Review> Reviews { get; set; }
 
     }
 }

@@ -14,6 +14,6 @@ namespace PaperCastle.Core
         public int BookId { get; set; }
         public Book Book { get; set; }
 
-        BookStatus Status { get; set; } 
+        public BookStatus Status { get; set; } 
     }
 }

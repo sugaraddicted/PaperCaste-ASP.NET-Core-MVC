@@ -12,9 +12,6 @@ namespace PaperCastle.Core
         public string LastName { get; set; }
         public string Email { get; set; }
         public ICollection<ApplicationUser> Friends { get; set; }
-        public ICollection<Book> BooksRead { get; set; }
-        public ICollection<Book> BooksCurrentlyReading { get; set; }
-        public ICollection<Book> BooksWantsToRead { get; set; } 
-
+        public ICollection<UsersBook> UsersBooks { get; set; }
     }
 }

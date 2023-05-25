@@ -1,7 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using PaperCastle.Infrastructure.Data;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+var conncectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(conncectionString,
+    b => b.MigrationsAssembly("PaperCastle.Infrastructure")));
+
 
 var app = builder.Build();
 

@@ -13,7 +13,7 @@ namespace PaperCastle.Core
         public int YearOfWriting { get; set; }
         public Author Author { get; set; }  
         public Country Country { get; set; }    
-        public ICollection<Genre> Genres { get; set; }
+        public ICollection<BookGenre> BookGenres { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<UsersBook> UsersBooks { get; set; }
 

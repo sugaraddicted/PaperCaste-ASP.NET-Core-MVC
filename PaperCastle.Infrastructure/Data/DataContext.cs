@@ -2,6 +2,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using PaperCastle.Core;
+using PaperCastle.Core.Entity;
+using PaperCastle.Infrastructure.Data.Configurations;
 
 namespace PaperCastle.Infrastructure.Data
 {
@@ -13,38 +15,12 @@ namespace PaperCastle.Infrastructure.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UsersBook>().HasKey(ub => new
-            {
-                ub.ApplicationUserId,
-                ub.BookId
-            });
-
-            modelBuilder.Entity<BookGenre>().HasKey(bg => new
-            {
-                bg.BookId,
-                bg.GenreId
-            });
-
-            modelBuilder.Entity<UsersBook>()
-                 .HasOne(u => u.ApplicationUser)
-                 .WithMany(ub => ub.UsersBooks)
-                 .HasForeignKey(au =>au.ApplicationUserId);
-            modelBuilder.Entity<UsersBook>()
-                 .HasOne(b => b.Book)
-                 .WithMany(ub => ub.UsersBooks)
-                 .HasForeignKey(b =>b.BookId);
-
-         
-            modelBuilder.Entity<BookGenre>()
-                .HasOne(b => b.Book)
-                .WithMany(bg => bg.BookGenres)
-                .HasForeignKey(b => b.BookId);
-            modelBuilder.Entity<BookGenre>()
-                .HasOne(g => g.Genre)
-                .WithMany(bg => bg.BookGenres)
-                .HasForeignKey(g => g.GenreId);
-
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new ReviewConfiguration());
+            modelBuilder.ApplyConfiguration(new BookConfiguration());
+            modelBuilder.ApplyConfiguration(new BookGenreConfiguration());
+            modelBuilder.ApplyConfiguration(new BookshelfConfiguration());
+            modelBuilder.ApplyConfiguration(new BookshelfBookConfiguraion());
+            modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
         }
 
         public DbSet<Book> Books { get; set; }
@@ -54,7 +30,8 @@ namespace PaperCastle.Infrastructure.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<BookGenre> BookGenres { get; set; }
-        public DbSet<UsersBook> UsersBooks { get; set; }
+        public DbSet<Review> Bookshelves { get; set; }
+        public DbSet<BookshelfBook> BookshelfBooks { get; set; }    
 
     }
 }

@@ -30,7 +30,7 @@ namespace PaperCastle.Infrastructure.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<BookGenre> BookGenres { get; set; }
-        public DbSet<Review> Bookshelves { get; set; }
+        public DbSet<Bookshelf> Bookshelves { get; set; }
         public DbSet<BookshelfBook> BookshelfBooks { get; set; }    
 
     }

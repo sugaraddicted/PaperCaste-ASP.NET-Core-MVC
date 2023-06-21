@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace PaperCastle.Infrastructure.Data.Intefaces
 {
-    internal interface IBookRepository
+    public interface IBookRepository
     {
         ICollection<Book> GetBooks();
         Book GetBookById(int id);

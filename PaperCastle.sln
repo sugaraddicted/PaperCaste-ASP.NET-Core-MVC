@@ -5,11 +5,13 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperCastle.WebUI", "PaperCastle\PaperCastle.WebUI.csproj", "{C5F93F34-AD0D-4933-9C64-BF250EF8606D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperCastle.Core", "PaperCastle.Core\PaperCastle.Core.csproj", "{559149B0-7FD3-4884-A54E-11BBF3CB0341}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperCastle.Core", "PaperCastle.Core\PaperCastle.Core.csproj", "{559149B0-7FD3-4884-A54E-11BBF3CB0341}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperCastle.Application", "PaperCastle.Application\PaperCastle.Application.csproj", "{F05845D8-940E-4B00-9C44-E33750B9A64B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperCastle.Application", "PaperCastle.Application\PaperCastle.Application.csproj", "{F05845D8-940E-4B00-9C44-E33750B9A64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperCastle.Infrastructure", "PaperCastle.Infrastructure\PaperCastle.Infrastructure.csproj", "{D0721FAC-1468-48B8-A5CA-988E34146E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperCastle.Infrastructure", "PaperCastle.Infrastructure\PaperCastle.Infrastructure.csproj", "{D0721FAC-1468-48B8-A5CA-988E34146E20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperCastle.Tests", "PaperCastle.Tests\PaperCastle.Tests.csproj", "{FE316A39-83C1-4907-8572-7A996E82A365}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D0721FAC-1468-48B8-A5CA-988E34146E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0721FAC-1468-48B8-A5CA-988E34146E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0721FAC-1468-48B8-A5CA-988E34146E20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE316A39-83C1-4907-8572-7A996E82A365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE316A39-83C1-4907-8572-7A996E82A365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE316A39-83C1-4907-8572-7A996E82A365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE316A39-83C1-4907-8572-7A996E82A365}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

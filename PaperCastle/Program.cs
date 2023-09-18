@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using PaperCastle.Infrastructure.Data.Repository;
+using PaperCastle.Infrastructure.Data.Intefaces;
 using PaperCastle.Infrastructure.Data;
-using System;
+using AutoMapper;
+using System.Text.Json.Serialization;
+using PaperCastle.Application.Dto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,16 @@ var conncectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(conncectionString,
     b => b.MigrationsAssembly("PaperCastle.Infrastructure")));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+
 
 
 var app = builder.Build();

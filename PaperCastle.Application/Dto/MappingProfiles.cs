@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using PaperCastle.Core;
 using PaperCastle.Core.Entity;
+using PaperCastle.Infrastructure.Data.ViewModels;
 
 namespace PaperCastle.Application.Dto
 {
@@ -24,6 +26,9 @@ namespace PaperCastle.Application.Dto
 
             CreateMap<Bookshelf, BookshelfDto>();
             CreateMap<BookshelfDto, Bookshelf>();
+
+            CreateMap<NewBookVM, Book>()
+            .ForMember(dest => dest.BookGenres, opt => opt.MapFrom(src => src.GenreIds.Select(genreId => new BookGenre { GenreId = genreId })));
         }
     }
 }

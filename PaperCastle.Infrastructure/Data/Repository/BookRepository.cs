@@ -44,29 +44,9 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return ((decimal)review.Sum(r => r.Rating)) / review.Count();
         }
 
-        public bool CreateBook(ICollection<int> genreIds, int yearOfWriting, string description, string coverImageURL, string authorName, string countryName, Book book)
+        public bool CreateBook(Book book)
         {
-            var bookGenres = _context.Genres.Where(g => genreIds.Contains(g.Id)).ToList();
-
-            book.Author = _context.Authors.FirstOrDefault(a => a.Name == authorName);
-            book.Country = _context.Countries.FirstOrDefault(c => c.Name == countryName);
-            book.YearOfWriting = yearOfWriting;
-            book.Description = description;
-            book.CoverImageURL = coverImageURL;
-
-            foreach (var genre in bookGenres)
-            {
-                var bookGenre = new BookGenre
-                {
-                    Genre = genre,
-                    Book = book
-                };
-
-                book.BookGenres.Add(bookGenre);
-            }
-
             _context.Add(book);
-
             return Save();
         }
 

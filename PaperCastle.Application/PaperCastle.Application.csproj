@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PaperCastle.Core\PaperCastle.Core.csproj" />
+    <ProjectReference Include="..\PaperCastle.Infrastructure\PaperCastle.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

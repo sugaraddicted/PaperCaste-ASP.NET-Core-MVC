@@ -17,7 +17,7 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
 
         decimal GetBookRating(int bookId);
 
-        bool CreateBook(ICollection<int> genreIds, int yearOfWriting, string description, string coverImageURL, string authorName, string countryName, Book book);
+        bool CreateBook(Book book);
 
         bool BookExists(int id);
 

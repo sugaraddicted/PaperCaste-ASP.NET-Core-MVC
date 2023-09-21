@@ -12,8 +12,8 @@ using PaperCastle.Infrastructure.Data;
 namespace PaperCastle.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230526224139_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230918203935_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,6 +123,9 @@ namespace PaperCastle.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PictureURL")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
@@ -187,7 +190,45 @@ namespace PaperCastle.Infrastructure.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Bookshelf");
+                    b.ToTable("Bookshelves");
+                });
+
+            modelBuilder.Entity("PaperCastle.Core.Entity.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("PaperCastle.Core.Entity.Genre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("PaperCastle.Core.Entity.Review", b =>
@@ -217,45 +258,7 @@ namespace PaperCastle.Infrastructure.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Review");
-                });
-
-            modelBuilder.Entity("PaperCastle.Core.ValueObject.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
-                });
-
-            modelBuilder.Entity("PaperCastle.Core.ValueObject.Genre", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Genres");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("ApplicationUserApplicationUser", b =>
@@ -281,7 +284,7 @@ namespace PaperCastle.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PaperCastle.Core.ValueObject.Genre", "Genre")
+                    b.HasOne("PaperCastle.Core.Entity.Genre", "Genre")
                         .WithMany("BookGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -313,7 +316,7 @@ namespace PaperCastle.Infrastructure.Migrations
 
             modelBuilder.Entity("PaperCastle.Core.Entity.ApplicationUser", b =>
                 {
-                    b.HasOne("PaperCastle.Core.ValueObject.Country", "Country")
+                    b.HasOne("PaperCastle.Core.Entity.Country", "Country")
                         .WithMany("ApplicationUsers")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -323,7 +326,7 @@ namespace PaperCastle.Infrastructure.Migrations
 
             modelBuilder.Entity("PaperCastle.Core.Entity.Author", b =>
                 {
-                    b.HasOne("PaperCastle.Core.ValueObject.Country", "Country")
+                    b.HasOne("PaperCastle.Core.Entity.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
 
@@ -337,7 +340,7 @@ namespace PaperCastle.Infrastructure.Migrations
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("PaperCastle.Core.ValueObject.Country", "Country")
+                    b.HasOne("PaperCastle.Core.Entity.Country", "Country")
                         .WithMany("Books")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -400,14 +403,14 @@ namespace PaperCastle.Infrastructure.Migrations
                     b.Navigation("BookshelfBooks");
                 });
 
-            modelBuilder.Entity("PaperCastle.Core.ValueObject.Country", b =>
+            modelBuilder.Entity("PaperCastle.Core.Entity.Country", b =>
                 {
                     b.Navigation("ApplicationUsers");
 
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("PaperCastle.Core.ValueObject.Genre", b =>
+            modelBuilder.Entity("PaperCastle.Core.Entity.Genre", b =>
                 {
                     b.Navigation("BookGenres");
                 });

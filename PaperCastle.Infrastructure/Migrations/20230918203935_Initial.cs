@@ -5,7 +5,7 @@
 namespace PaperCastle.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,6 +67,7 @@ namespace PaperCastle.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PictureURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -81,7 +82,7 @@ namespace PaperCastle.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bookshelf",
+                name: "Bookshelves",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -91,9 +92,9 @@ namespace PaperCastle.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bookshelf", x => x.Id);
+                    table.PrimaryKey("PK_Bookshelves", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bookshelf_ApplicationUsers_ApplicationUserId",
+                        name: "FK_Bookshelves_ApplicationUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "ApplicationUsers",
                         principalColumn: "Id",
@@ -194,15 +195,15 @@ namespace PaperCastle.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookshelfBooks_Bookshelf_BookshelfId",
+                        name: "FK_BookshelfBooks_Bookshelves_BookshelfId",
                         column: x => x.BookshelfId,
-                        principalTable: "Bookshelf",
+                        principalTable: "Bookshelves",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Review",
+                name: "Reviews",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -214,15 +215,15 @@ namespace PaperCastle.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Review", x => x.Id);
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Review_ApplicationUsers_ApplicationUserId",
+                        name: "FK_Reviews_ApplicationUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "ApplicationUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Review_Books_BookId",
+                        name: "FK_Reviews_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
@@ -255,23 +256,23 @@ namespace PaperCastle.Infrastructure.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookshelf_ApplicationUserId",
-                table: "Bookshelf",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BookshelfBooks_BookshelfId",
                 table: "BookshelfBooks",
                 column: "BookshelfId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Review_ApplicationUserId",
-                table: "Review",
+                name: "IX_Bookshelves_ApplicationUserId",
+                table: "Bookshelves",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Review_BookId",
-                table: "Review",
+                name: "IX_Reviews_ApplicationUserId",
+                table: "Reviews",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_BookId",
+                table: "Reviews",
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
@@ -290,7 +291,7 @@ namespace PaperCastle.Infrastructure.Migrations
                 name: "BookshelfBooks");
 
             migrationBuilder.DropTable(
-                name: "Review");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "UserFriends");
@@ -299,7 +300,7 @@ namespace PaperCastle.Infrastructure.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Bookshelf");
+                name: "Bookshelves");
 
             migrationBuilder.DropTable(
                 name: "Books");

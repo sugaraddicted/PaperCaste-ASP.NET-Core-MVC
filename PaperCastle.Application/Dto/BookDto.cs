@@ -12,7 +12,7 @@ namespace PaperCastle.Application.Dto
         public string Title { get; set; }
         public string Description { get; set; }
         public string CoverImageURL { get; set; }
-        public int YearOfWriting { get; set; }
+        public int? YearOfWriting { get; set; }
         public int? AuthorId { get; set; }
         public string AuthorName { get; set; }
         public int? CountryId { get; set; }

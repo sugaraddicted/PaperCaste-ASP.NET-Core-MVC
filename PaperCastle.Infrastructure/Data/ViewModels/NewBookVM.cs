@@ -16,11 +16,10 @@ namespace PaperCastle.Infrastructure.Data.ViewModels
 
         [Display(Name = "Book cover URL")]
         [Required(ErrorMessage = "Book cover URL is required")]
-        public string CoverURL { get; set; }
+        public string CoverImageURL { get; set; }
 
         [Display(Name = "Year of writting")]
-        [Required(ErrorMessage = "Year of writting is required")]
-        public DateTime YearOfWritting { get; set; }
+        public int YearOfWriting { get; set; }
 
         //Relationships
         [Display(Name = "Select genre(s)")]

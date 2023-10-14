@@ -37,55 +37,49 @@ namespace PaperCastle.Tests.Repository
         }
 
         [Test]
-        public async Task GenreRepository_CreateGenre_ReturnsBool()
+        public async Task GenreRepository_CreateAsync_AddsGenreToDb()
         {
-            //Arrange
-            var genre = new Genre() { Name = "NewGenre",
-                                      Description = "New genre description"};
+            // Arrange
+            var genre = new Genre() { Name = "NewGenre", Description = "New genre description" };
             var dbContext = await GetDbContext();
             var genreRepository = new GenreRepository(dbContext);
 
-            //Act
-            var result = genreRepository.CreateGenre(genre);
+            // Act
+            await genreRepository.CreateAsync(genre);
 
-            //Assert
-            Assert.That(result, Is.True);
+            // Assert
+            Assert.That(dbContext.Genres.Contains(genre));
         }
-        
+
         [Test]
-        public async Task GenreRepository_GetGenreById_ReturnsNeededGenre()
+        public async Task GenreRepository_GetByIdAsync_ReturnsNeededGenre()
         {
-            //Arrange
+            // Arrange
             var id = 1;
             var dbContext = await GetDbContext();
             var genreRepository = new GenreRepository(dbContext);
 
-            //Act
-            var result = genreRepository.GetGenreById(id);
+            // Act
+            var result = await genreRepository.GetByIdAsync(id);
 
-            //Assert
+            // Assert
             Assert.That(result, Is.Not.Null);
             Assert.IsInstanceOf<Genre>(result);
         }
 
-
         [Test]
-        public async Task GenreRepository_DeleteGenre_ReturnsBool()
+        public async Task GenreRepository_DeleteAsync_DeletesGenreFromDb()
         {
-            //Arrange
+            // Arrange
             var dbContext = await GetDbContext();
             var genreRepository = new GenreRepository(dbContext);
             var genre = dbContext.Genres.FirstOrDefault(g => g.Id == 1);
 
-            //Act
-            var result = genreRepository.DeleteGenre(genre);
+            // Act
+            await genreRepository.DeleteAsync(genre);
 
-            //Assert
-            Assert.That(result, Is.True);
+            // Assert
             Assert.That(!dbContext.Genres.Contains(genre));
         }
-
-
-
     }
 }

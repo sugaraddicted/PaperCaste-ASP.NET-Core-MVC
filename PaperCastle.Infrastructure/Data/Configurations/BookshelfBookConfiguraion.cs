@@ -22,11 +22,13 @@ namespace PaperCastle.Infrastructure.Data.Configurations
 
             builder.HasOne(bb => bb.Book)
                 .WithMany(b => b.BookshelfBooks)
-                .HasForeignKey(bb => bb.BookId);
+                .HasForeignKey(bb => bb.BookId)
+                .OnDelete(DeleteBehavior.Cascade); ;
 
             builder.HasOne(bb => bb.Bookshelf)
                    .WithMany(bs => bs.BookshelfBooks)
-                   .HasForeignKey(bb => bb.BookshelfId);
+                   .HasForeignKey(bb => bb.BookshelfId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

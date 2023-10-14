@@ -10,19 +10,13 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
 {
     public interface IGenreRepository
     {
-        ICollection<Genre> GetGenres();
-        Genre GetGenreById(int id);
-
-        ICollection<Book> GetBooksByGenre(int genreId);
-
+        Task<ICollection<Genre>> GetGenresAsync();
+        Task<Genre> GetByIdAsync(int id);
+        Task<ICollection<Book>> GetBooksByGenreAsync(int genreId);
         bool GenreExists(int id);
-
-        bool CreateGenre(Genre genre);
-
-        bool Save();
-
-        bool UpdateGenre(Genre genre);
-
-        bool DeleteGenre(Genre genre);
+        Task CreateAsync(Genre genre);
+        Task SaveAsync();
+        Task UpdateAsync(Genre genre);
+        Task DeleteAsync(Genre genre);
     }
 }

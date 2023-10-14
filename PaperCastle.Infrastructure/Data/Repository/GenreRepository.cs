@@ -1,11 +1,6 @@
-﻿using PaperCastle.Core.Entity;
+﻿using Microsoft.EntityFrameworkCore;
+using PaperCastle.Core.Entity;
 using PaperCastle.Infrastructure.Data.Intefaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace PaperCastle.Infrastructure.Data.Repository
 {
@@ -18,16 +13,16 @@ namespace PaperCastle.Infrastructure.Data.Repository
             _context = context;
         }
 
-        public bool CreateGenre(Genre genre)
+        public async Task CreateAsync(Genre genre)
         {
             _context.Add(genre);
-            return Save();
+            await SaveAsync();
         }
 
-        public bool DeleteGenre(Genre genre)
+        public async Task DeleteAsync(Genre genre)
         {
             _context.Remove(genre);
-            return Save();
+            await SaveAsync();
         }
 
         public bool GenreExists(int id)
@@ -35,31 +30,35 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return _context.Genres.Any(x => x.Id == id);
         }
 
-        public ICollection<Book> GetBooksByGenre(int genreId)
+        public async Task<ICollection<Book>> GetBooksByGenreAsync(int genreId)
         {
-            return _context.BookGenres.Where(e => e.GenreId == genreId).Select(a => a.Book).ToList();
+            return await _context.BookGenres
+                .Where(e => e.GenreId == genreId)
+                .Select(a => a.Book)
+                .ToListAsync();
         }
 
-        public Genre GetGenreById(int id)
+        public async Task<Genre> GetByIdAsync(int id)
         {
-            return _context.Genres.Where(g => g.Id == id).FirstOrDefault();
+            return await _context.Genres
+                .Where(g => g.Id == id)
+                .FirstOrDefaultAsync();
         }
 
-        public ICollection<Genre> GetGenres()
+        public async Task<ICollection<Genre>> GetGenresAsync()
         {
-            return _context.Genres.ToList();
+            return await _context.Genres.ToListAsync();
         }
 
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool UpdateGenre(Genre genre)
+        public async Task UpdateAsync(Genre genre)
         {
             _context.Update(genre);
-            return Save();
+            await SaveAsync();
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -12,11 +12,13 @@ namespace PaperCastle.WebUI.Controllers
     {
         private readonly IGenreRepository _genreRepository;
         private readonly IMapper _mapper;
+
         public GenreController(IGenreRepository genreRepository, IMapper mapper)
         {
             _genreRepository = genreRepository;
             _mapper = mapper;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -33,13 +35,11 @@ namespace PaperCastle.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 var genre = _mapper.Map<Genre>(genreDto);
-                _genreRepository.CreateGenre(genre);
+                await _genreRepository.CreateAsync(genre);
                 return RedirectToAction(nameof(Index));
             }
 
             return View(genreDto);
         }
     }
-
-
 }

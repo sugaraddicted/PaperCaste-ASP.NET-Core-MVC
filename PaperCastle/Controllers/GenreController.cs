@@ -52,5 +52,29 @@ namespace PaperCastle.WebUI.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var genre = await _genreRepository.GetByIdAsync(id);
+            var genreDto = _mapper.Map<GenreDto>(genre);
+            if (genreDto == null) return View("NotFound");
+
+            return View(genreDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description")] GenreDto genreDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(genreDto);
+            }
+
+            var genre = _mapper.Map<Genre>(genreDto);
+            await _genreRepository.UpdateAsync(id, genre);
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

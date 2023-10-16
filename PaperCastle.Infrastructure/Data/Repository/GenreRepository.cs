@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PaperCastle.Core.Entity;
 using PaperCastle.Infrastructure.Data.Intefaces;
 
@@ -50,9 +51,19 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return await _context.Genres.ToListAsync();
         }
 
-        public async Task UpdateAsync(Genre genre)
+        public async Task UpdateAsync(int id, Genre genre)
         {
-            _context.Update(genre);
+            var existingGenre = await GetByIdAsync(id);
+
+            if (existingGenre == null)
+            {
+                throw new Exception("Genre not found"); 
+            }
+            existingGenre.Name = genre.Name;
+            existingGenre.Description = genre.Description;
+
+            _context.Update(existingGenre);
+
             await SaveAsync();
         }
 

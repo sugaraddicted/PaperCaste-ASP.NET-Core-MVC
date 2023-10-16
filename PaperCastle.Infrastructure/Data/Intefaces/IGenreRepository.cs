@@ -16,7 +16,7 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
         bool GenreExists(int id);
         Task CreateAsync(Genre genre);
         Task SaveAsync();
-        Task UpdateAsync(Genre genre);
+        Task UpdateAsync(int id, Genre genre);
         Task DeleteAsync(Genre genre);
     }
 }

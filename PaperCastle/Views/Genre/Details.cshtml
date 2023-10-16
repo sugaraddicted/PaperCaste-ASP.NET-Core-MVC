@@ -1,0 +1,11 @@
+﻿@using PaperCastle.Application.Dto;
+@model GenreDto;
+
+<div>
+    <div style="position: fixed; left: 25px; top: 80px;" class="text-white">
+        <a asp-action="Index" class="btn btn-outline-success">Back</a>
+    </div>
+    <h1>@Model.Name</h1>
+    <h2>Description</h2>
+    <p>@Model.Description</p>
+</div>

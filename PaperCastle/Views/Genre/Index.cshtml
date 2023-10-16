@@ -18,7 +18,7 @@
             @foreach (var genre in Model)
             {
                 <tr>
-                    <td>@genre.Name</td>
+                    <td><a asp-action="Details" asp-route-genreId="@genre.Id">@genre.Name</a></td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@genre.Id" asp-route-genreDto="@genre"  class="btn btn-primary">Edit</a>
                         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal-@genre.Id">Delete</button>

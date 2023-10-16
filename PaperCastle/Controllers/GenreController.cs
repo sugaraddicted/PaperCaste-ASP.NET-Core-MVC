@@ -76,5 +76,12 @@ namespace PaperCastle.WebUI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Details(int genreId)
+        {
+            var genre = await _genreRepository.GetByIdAsync(genreId);
+            var genreDto = _mapper.Map<GenreDto>(genre);
+            return View(genreDto);
+        }
+
     }
 }

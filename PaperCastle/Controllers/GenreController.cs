@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PaperCastle.Core.Entity;
 using PaperCastle.Application.Dto;
-using PaperCastle.Infrastructure.Data.Repository;
 using PaperCastle.Infrastructure.Data.Intefaces;
-using PaperCastle.Infrastructure.Data.ViewModels;
 
 namespace PaperCastle.WebUI.Controllers
 {
@@ -19,9 +17,11 @@ namespace PaperCastle.WebUI.Controllers
             _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var genres = await _genreRepository.GetGenresAsync();
+            var genreDtos = _mapper.Map<ICollection<GenreDto>>(genres);
+            return View(genreDtos);
         }
 
         public async Task<IActionResult> Create()
@@ -36,10 +36,21 @@ namespace PaperCastle.WebUI.Controllers
             {
                 var genre = _mapper.Map<Genre>(genreDto);
                 await _genreRepository.CreateAsync(genre);
+
                 return RedirectToAction(nameof(Index));
             }
 
             return View(genreDto);
+        }
+
+        public async Task<IActionResult> Delete(int genreId)
+        {
+            var genre = await _genreRepository.GetByIdAsync(genreId);
+
+            if(genre != null)
+                await _genreRepository.DeleteAsync(genre);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

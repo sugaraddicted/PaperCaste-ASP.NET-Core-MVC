@@ -63,7 +63,7 @@ namespace PaperCastle.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description")] GenreDto genreDto)
+        public async Task<IActionResult> Edit(int id, [Bind("Name","Description")] GenreDto genreDto)
         {
             if (!ModelState.IsValid)
             {
@@ -79,7 +79,14 @@ namespace PaperCastle.WebUI.Controllers
         public async Task<IActionResult> Details(int genreId)
         {
             var genre = await _genreRepository.GetByIdAsync(genreId);
+
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
             var genreDto = _mapper.Map<GenreDto>(genre);
+
             return View(genreDto);
         }
 

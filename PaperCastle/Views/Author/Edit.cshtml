@@ -1,0 +1,61 @@
+﻿@using PaperCastle.Application.Dto;
+@model AuthorDto;
+
+@{
+    ViewData["Title"] = "Edit Author";
+}
+
+<div>
+    <div class="row text">
+        <div class="col-md-8 offset-2 text-white">
+            <p>
+                <h1>
+                    Edit Author
+                </h1>
+            </p>
+            <div class="col-md-8 offset-2">
+                <form asp-action="Edit">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"> </div>
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-dandger"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Bio" class="control-label"></label>
+                        <input asp-for="Bio" class="form-control" />
+                        <span asp-validation-for="Bio" class="text-dandger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CountryId" class="control-label"></label>
+                        <select asp-for="CountryId" class="form-control" asp-items="ViewBag.Countries"></select>
+                        <span asp-validation-for="CountryId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PictureURL" class="control-label"></label>
+                        <input asp-for="PictureURL" class="form-control" />
+                        <span asp-validation-for="PictureURL" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 offset-4 text-center">
+                        <img id="PicturePreview" style="max-width: 200px" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" style="margin-top: 5px" value="Update" class="btn btn-outline-success float-end" />
+                        <a class="btn btn-outline-secondary" asp-action="Index" style="margin-top: 5px">Show All</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $("#PictureURL").on("change", function () {
+            var output = document.getElementById("PicturePreview");
+            output.src = $(this).val();
+        })
+    </script>
+}

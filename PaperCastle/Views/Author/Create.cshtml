@@ -36,7 +36,9 @@
                 <input asp-for="PictureURL" class="form-control" />
                 <span asp-validation-for="PictureURL" class="text-danger"></span>
             </div>
-
+            <div class="text-center">
+                <img id="PicturePreview" style="max-width: 200px" />
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-secondary">Back</a>
@@ -44,3 +46,12 @@
         </form>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $("#PictureURL").on("change", function () {
+            var output = document.getElementById("PicturePreview");
+            output.src = $(this).val();
+        })
+    </script>
+}

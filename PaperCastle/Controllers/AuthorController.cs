@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using PaperCastle.Application.Dto;
 using PaperCastle.Core.Entity;
 using PaperCastle.Infrastructure.Data.Intefaces;
+using PaperCastle.Infrastructure.Data.Repository;
 
 namespace PaperCastle.WebUI.Controllers
 {
@@ -18,24 +19,25 @@ namespace PaperCastle.WebUI.Controllers
             _countryRepository = countryRepository;
             _mapper = mapper;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var authors = await _authorRepository.GetAuthorsAsync();
+            var authorDtos = _mapper.Map<ICollection<AuthorDto>>(authors);
+            return View(authorDtos);
         }
 
         public async Task<IActionResult> Create()
         {
-            var countries = _countryRepository.GetCountries();
+            var countries = await _countryRepository.GetCountriesAsync();
 
             var countryItems = countries.Select(country => new SelectListItem
             {
                 Value = country.Id.ToString(),
                 Text = country.Name
             }).ToList();
+            ViewBag.Countries = new SelectList(countryItems, "Value", "Text");
 
             var authorDto = new AuthorDto();
-
-            ViewBag.Countries = new SelectList(countryItems, "Value", "Text");
 
             return View(authorDto);
         }
@@ -46,11 +48,62 @@ namespace PaperCastle.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 var author = _mapper.Map<Author>(authorDto);
-                _authorRepository.CreateAuthor(author);
+                await _authorRepository.CreateAsync(author);
                 return RedirectToAction(nameof(Index));
             }
 
             return View(authorDto);
+        }
+
+        public async Task<IActionResult> Delete(int authorId)
+        {
+            var author = await _authorRepository.GetByIdAsync(authorId);
+
+            await _authorRepository.DeleteAsync(author);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int authorId)
+        {
+            var author = await _authorRepository.GetByIdAsync(authorId);
+            var authorDto = _mapper.Map<AuthorDto>(author);
+
+            return View(authorDto);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var author = await _authorRepository.GetByIdAsync(id);
+
+            if (author == null)
+            {
+                return NotFound();
+            }
+
+            var countries = await _countryRepository.GetCountriesAsync();
+            var countryItems = countries.Select(country => new SelectListItem
+            {
+                Value = country.Id.ToString(),
+                Text = country.Name
+            }).ToList();
+            ViewBag.Countries = new SelectList(countryItems, "Value", "Text");
+
+            var authorDto = _mapper.Map<AuthorDto>(author);
+            return View(authorDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, AuthorDto authorDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(authorDto);
+            }
+
+            var author = _mapper.Map<Author>(authorDto);
+            await _authorRepository.UpdateAsync(id, author);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -19,14 +19,14 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return author?.Books.ToList();
         }
 
-        public Author GetAuthorById(int id)
+        public async Task<Author> GetByIdAsync(int id)
         {
-            return _context.Authors.Where(a => a.Id == id).FirstOrDefault();
+            return await _context.Authors.Where(a => a.Id == id).FirstOrDefaultAsync();
         }
 
-        public ICollection<Author> GetAuthors()
+        public async Task<ICollection<Author>> GetAuthorsAsync()
         {
-            return _context.Authors.ToList();
+            return await _context.Authors.ToListAsync();
         }
 
         public bool AuthorExists(int id)
@@ -34,28 +34,32 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return _context.Authors.Any(a => a.Id == id);
         }
 
-        public bool CreateAuthor(Author author)
+        public async Task CreateAsync(Author author)
         {
             _context.Add(author);
-            return Save();
+            await SaveAsync();
         }
 
-        public bool Save()
+        public async Task SaveAsync()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            await _context.SaveChangesAsync();
         }
 
-        public bool UpdateAuthor(Author author)
+        public async Task UpdateAsync(int id, Author updatesdAuthor)
         {
+            var author = await GetByIdAsync(id);
+            author.Name = updatesdAuthor.Name;
+            author.Bio = updatesdAuthor.Bio;
+            author.PictureURL = updatesdAuthor.PictureURL;
+            author.CountryId = updatesdAuthor.CountryId;
             _context.Update(author);
-            return Save();
+            await SaveAsync();
         }
 
-        public bool DeleteAuthor(Author author)
+        public async Task DeleteAsync(Author author)
         {
             _context.Remove(author);
-            return Save();
+            await SaveAsync();
         }
     }
 }

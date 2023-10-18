@@ -10,19 +10,19 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
 {
     public interface IAuthorRepository
     {
-        ICollection<Author> GetAuthors();
-        Author GetAuthorById(int id);
+        Task<ICollection<Author>> GetAuthorsAsync();
+        Task<Author> GetByIdAsync(int id);
 
         ICollection<Book> GetAuthorsBooks(int authorsId);
 
         bool AuthorExists(int id);
 
-        bool CreateAuthor(Author author);
+        Task CreateAsync(Author author);
 
-        bool Save();
+        Task SaveAsync();
 
-        bool UpdateAuthor(Author author);
+        Task UpdateAsync(int id, Author author);
 
-        bool DeleteAuthor(Author author);
+        Task DeleteAsync(Author author);
     }
 }

@@ -10,19 +10,13 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
 {
     public interface ICountryRepository
     {
-        ICollection<Country> GetCountries();
-        Country GetCountryById(int id);
-
-        ICollection<Book> GetBooksByCountry(int countryId);
-
+        Task<ICollection<Country>> GetCountriesAsync();
+        Task<Country> GetByIdAsync(int id);
+        Task<ICollection<Book>> GetBooksByCountryAsync(int countryId);
         bool CountryExists(int id);
-
-        bool CreateCountry(Country country);
-
-        bool UpdateCountry(Country country);
-
-        bool DeleteCountry(Country country);
-
-        bool Save();
+        Task CreateAsync(Country country);
+        Task UpdateAsync(int id, Country country);
+        Task DeleteAsync(Country country);
+        Task SaveAsync();
     }
 }

@@ -1,5 +1,7 @@
-﻿using PaperCastle.Core.Entity;
+﻿using Microsoft.EntityFrameworkCore;
+using PaperCastle.Core.Entity;
 using PaperCastle.Infrastructure.Data.Intefaces;
+using System;
 
 namespace PaperCastle.Infrastructure.Data.Repository
 {
@@ -17,42 +19,56 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return _context.Countries.Any(c => c.Id == id);
         }
 
-        public ICollection<Book> GetBooksByCountry(int countryId)
+        public async Task<ICollection<Book>> GetBooksByCountryAsync(int countryId)
         {
-            return _context.Books.Where(a => a.Country.Id == countryId).ToList();
+            return await _context.Books
+                .Where(a => a.Country.Id == countryId)
+                .ToListAsync();
         }
 
-        public ICollection<Country> GetCountries()
+        public async Task<ICollection<Country>> GetCountriesAsync()
         {
-            return _context.Countries.ToList();
+            return await _context.Countries.ToListAsync();
         }
 
-        public Country GetCountryById(int id)
+        public async Task<Country> GetByIdAsync(int id)
         {
-            return _context.Countries.Where(c => c.Id == id).FirstOrDefault();
+            return _context.Countries
+                .Where(c => c.Id == id)
+                .FirstOrDefault();
         }
-        public bool CreateCountry(Country country)
+
+        public async Task CreateAsync(Country country)
         {
             _context.Add(country);
-            return Save();
+            await SaveAsync();
         }
 
-        public bool Save()
+        public async Task SaveAsync()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            await _context.SaveChangesAsync();
         }
 
-        public bool UpdateCountry(Country country)
+        public async Task UpdateAsync(int id, Country country)
         {
-            _context.Update(country);
-            return Save();
+            var existingCountry = await GetByIdAsync(id);
+
+            if (existingCountry == null)
+            {
+                throw new Exception("Genre not found");
+            }
+
+            existingCountry.Name = country.Name;
+
+            _context.Update(existingCountry);
+
+            await SaveAsync();
         }
 
-        public bool DeleteCountry(Country country)
+        public async Task DeleteAsync(Country country)
         {
             _context.Remove(country);
-            return Save();
+            await SaveAsync();
         }
     }
 }

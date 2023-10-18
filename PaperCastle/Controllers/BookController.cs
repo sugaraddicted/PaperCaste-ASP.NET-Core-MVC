@@ -28,40 +28,107 @@ namespace PaperCastle.WebUI.Controllers
             _mapper = mapper;
         }
 
-    public IActionResult Create()
-    {
-        SetViewBags();
-        var newBookVM = new NewBookVM();
-        return View(newBookVM);
-    }
+        public async Task<IActionResult> Index() {
 
-    [HttpPost]
-        public async Task<IActionResult> Create(NewBookVM newBookVM)
+            var books = await _bookRepository.GetBooksAsync();
+            var bookDtos = _mapper.Map<ICollection<BookDto>>(books);
+            return View(bookDtos);
+        }
+
+        [Route("Book/Create")]
+        public async Task<IActionResult> Create()
+        {
+            await SetViewBags();
+            var newBookVM = new BookVM();
+            return View(newBookVM);
+        }
+
+        [Route("Book/Create")]
+        [HttpPost, ActionName("Create")]
+        public async Task<IActionResult> Create(BookVM newBookVM)
         {
             if (!ModelState.IsValid)
             {
                 return View(newBookVM);
             }
 
-            //try
-           // {
+            try
+            {
                 var book = _mapper.Map<Book>(newBookVM);
-                _bookRepository.CreateBook(book);
+                await _bookRepository.CreateAsync(book);
                 return RedirectToAction(nameof(Index));
-           // }
-            //catch (Exception ex)
-            //{
-                //ModelState.AddModelError(string.Empty, "An error occurred while creating the book.");
-               // SetViewBags();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the book.");
+                SetViewBags();
 
-                //return View(newBookVM);
-            //}
+                return View(newBookVM);
+            }
         }
-        public void SetViewBags()
+
+        [Route("Book/Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
         {
-            var genres = _genreRepository.GetGenres();
-            var authors = _authorRepository.GetAuthors();
-            var countries = _countryRepository.GetCountries();
+            await SetViewBags();
+            var book = await _bookRepository.GetByIdAsync(id);
+            var BookVM = _mapper.Map<BookVM>(book);
+            return View(BookVM);
+        }
+
+        [Route("Book/Edit/{id}")]
+        [HttpPost, ActionName("Edit")]
+        public async Task<IActionResult> Edit(int id, BookVM bookVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                await SetViewBags();
+                return View(bookVM);
+            }
+
+            try
+            {
+                var book = _mapper.Map<Book>(bookVM);
+                await _bookRepository.UpdateAsync(id, book);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while editing the book.");
+                await SetViewBags();
+
+                return View(bookVM);
+            }
+        }
+
+        [Route("Book/{id}")]
+        public async Task<IActionResult> Details(int id)
+        {
+            var book = await _bookRepository.GetByIdAsync(id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var bookDto = _mapper.Map<BookDto>(book);
+
+            return View(bookDto);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var book = await _bookRepository.GetByIdAsync(id);
+
+            await _bookRepository.DeleteAsync(book);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task SetViewBags()
+        {
+            var genres = await _genreRepository.GetGenresAsync();
+            var authors = await _authorRepository.GetAuthorsAsync();
+            var countries = await _countryRepository.GetCountriesAsync();
 
             var genreItems = genres.Select(genre => new SelectListItem
             {

@@ -1,75 +1,95 @@
-﻿using PaperCastle.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using PaperCastle.Core;
 using PaperCastle.Core.Entity;
 using PaperCastle.Infrastructure.Data.Intefaces;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace PaperCastle.Infrastructure.Data.Repository
 {
     public class BookRepository : IBookRepository
     {
         private readonly DataContext _context;
-
         public BookRepository(DataContext context)
         {
             _context = context;
         }
 
-        public ICollection<Book> GetBooks()
+        public async Task<ICollection<Book>> GetBooksAsync()
         {
-          return _context.Books.OrderBy(p => p.Id).ToList();
+            return await _context.Books.OrderBy(p => p.Id)
+                                      .Include(b => b.Author)
+                                      .ToListAsync();
         }
 
-        public Book GetBookById(int id)
+        public async Task<Book> GetByIdAsync(int id)
         {
-            return _context.Books.Where(b => b.Id == id).FirstOrDefault();
+            var book = await _context.Books.Where(b => b.Id == id)
+                                    .Include(b => b.Author)
+                                    .Include(b => b.Country)
+                                    .Include(b => b.Reviews)
+                                    .Include(b => b.BookGenres)
+                                    .Include(b => b.BookshelfBooks)
+                                    .FirstOrDefaultAsync();
+            return book;
         }
 
-        public Book GetBookByTitle(string title)
+        public async Task<Book> GetBookByTitleAsync(string title)
         {
-            return _context.Books.Where(b => b.Title == title).FirstOrDefault();
+            var book = await _context.Books.Where(b => b.Title == title).FirstOrDefaultAsync();
+            return book;
         }
 
-        public decimal GetBookRating(int bookId)
+        public async Task<decimal> GetBookRatingAsync(int bookId)
         {
-            var review = _context.Reviews.Where(r => r.Book.Id == bookId);
+            var review = await _context.Reviews.Where(r => r.Book.Id == bookId).ToListAsync();
 
             if (review.Count() <= 0) return 0;
 
             return ((decimal)review.Sum(r => r.Rating)) / review.Count();
         }
 
-        public bool CreateBook(Book book)
+        public async Task CreateAsync(Book book)
         {
             _context.Add(book);
-            return Save();
+            await SaveAsync();
         }
 
         public bool BookExists(int id)
         {
             return _context.Books.Any(a => a.Id == id);
         }
-        public bool UpdateBook(Book book)
+
+        public async Task UpdateAsync(int id, Book updatedBook)
         {
+            var book = await _context.Books.Where(b => b.Id == id).FirstOrDefaultAsync();
+
+            if (book == null) 
+                throw new Exception("Book not found");
+            
+            if(!updatedBook.Title.IsNullOrEmpty())
+                           book.Title = updatedBook.Title;
+            await _context.BookGenres.Where(bg => bg.BookId == book.Id).ExecuteDeleteAsync();
+
+            book.AuthorId = updatedBook.AuthorId;
+            book.Description = updatedBook.Description;
+            book.BookGenres = updatedBook.BookGenres;
+            book.CountryId = updatedBook.CountryId;
+            book.CoverImageURL = updatedBook.CoverImageURL;
+            book.YearOfWriting = updatedBook.YearOfWriting;
+
             _context.Update(book);
-            return Save();
+            await SaveAsync();
         }
 
-        public bool DeleteBook(Book book)
+        public async Task DeleteAsync(Book book)
         {
             _context.Remove(book);
-            return Save();
+            await SaveAsync();
         }
 
-        public bool Save()
+        public async Task SaveAsync()
         {
-            var save = _context.SaveChanges();
-            return save > 0 ? true : false;
+            await _context.SaveChangesAsync();
         }
     }
 }

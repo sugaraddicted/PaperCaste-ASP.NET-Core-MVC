@@ -10,21 +10,21 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
 {
     public interface IBookRepository
     {
-        ICollection<Book> GetBooks();
-        Book GetBookById(int id);
+        Task<ICollection<Book>> GetBooksAsync();
+        Task<Book> GetByIdAsync(int id);
 
-        Book GetBookByTitle(string title);
+        Task<Book> GetBookByTitleAsync(string title);
 
-        decimal GetBookRating(int bookId);
+        Task<decimal> GetBookRatingAsync(int bookId);
 
-        bool CreateBook(Book book);
+        Task CreateAsync(Book book);
 
         bool BookExists(int id);
 
-        bool UpdateBook(Book book);
+        Task UpdateAsync(int id, Book book);
 
-        bool DeleteBook(Book book);
+        Task DeleteAsync(Book book);
 
-        bool Save();
+        Task SaveAsync();
     }
 }

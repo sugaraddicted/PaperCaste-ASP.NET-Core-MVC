@@ -9,7 +9,10 @@ namespace PaperCastle.Application.Dto
     {
         public MappingProfiles()
         {
-            CreateMap<Book, BookDto>();
+            CreateMap<Book, BookDto>()
+            .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Author.Name))
+            .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name));
+
             CreateMap<BookDto, Book>();
 
             CreateMap<Genre, GenreDto>();
@@ -27,8 +30,11 @@ namespace PaperCastle.Application.Dto
             CreateMap<Bookshelf, BookshelfDto>();
             CreateMap<BookshelfDto, Bookshelf>();
 
-            CreateMap<NewBookVM, Book>()
+            CreateMap<BookVM, Book>()
             .ForMember(dest => dest.BookGenres, opt => opt.MapFrom(src => src.GenreIds.Select(genreId => new BookGenre { GenreId = genreId })));
+
+            CreateMap<Book, BookVM>()
+            .ForMember(dest => dest.GenreIds, opt => opt.MapFrom(src => src.BookGenres.Select(bg => bg.GenreId).ToList()));
         }
     }
 }

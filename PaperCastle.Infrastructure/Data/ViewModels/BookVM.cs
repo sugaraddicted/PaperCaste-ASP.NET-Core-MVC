@@ -2,7 +2,7 @@
 
 namespace PaperCastle.Infrastructure.Data.ViewModels
 {
-    public class NewBookVM
+    public class BookVM
     {
         public int Id { get; set; }
 

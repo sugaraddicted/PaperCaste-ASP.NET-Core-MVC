@@ -18,6 +18,7 @@ namespace PaperCastle.Application.Dto
         public int? CountryId { get; set; }
         public string CountryName { get; set; }
         public ICollection<int> GenreIds { get; set; }
+        public ICollection<string> GenreNames { get; set; }
         
     }
 

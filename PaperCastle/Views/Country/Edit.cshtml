@@ -1,0 +1,36 @@
+﻿@using PaperCastle.Application.Dto;
+@model CountryDto;
+
+@{
+    ViewData["Title"] = "Edit Country";
+}
+
+<div>
+    <div class="row text">
+        <div class="col-md-8 offset-2 text-white">
+            <p>
+                <h1>
+                    Edit Country
+                </h1>
+            </p>
+            <div class="col-md-8 offset-2">
+                <form asp-action="Edit">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"> </div>
+
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-dandger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" style="margin-top: 5px" value="Update" class="btn btn-outline-success float-end" />
+                        <a class="btn btn-outline-secondary" asp-action="Index" style="margin-top: 5px">Show All</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -17,9 +17,11 @@ namespace PaperCastle.WebUI.Controllers
              _countryRepository = countryRepository;
             _mapper = mapper;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var countries = await _countryRepository.GetCountriesAsync();
+            var countriesDto = _mapper.Map<ICollection<CountryDto>>(countries);
+            return View(countriesDto);
         }
         public IActionResult Create()
         {
@@ -27,14 +29,61 @@ namespace PaperCastle.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CountryDto countryDto) 
+        public async Task<IActionResult> Create(CountryDto countryDto) 
         {
             if (ModelState.IsValid)
             {
                 var country = _mapper.Map<Country>(countryDto);
-                _countryRepository.CreateCountry(country);
+                await _countryRepository.CreateAsync(country);
                 return RedirectToAction(nameof(Index));
             }
+
+            return View(countryDto);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var country = await _countryRepository.GetByIdAsync(id);
+            var countryDto = _mapper.Map<CountryDto>(country);
+            if (countryDto == null) return View("NotFound");
+
+            return View(countryDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] CountryDto countryDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(countryDto);
+            }
+
+            var country = _mapper.Map<Country>(countryDto);
+            await _countryRepository.UpdateAsync(id, country);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int countryId)
+        {
+            var country = await _countryRepository.GetByIdAsync(countryId); 
+            if(country == null)
+            {
+                return View("Error");
+            }
+            await _countryRepository.DeleteAsync(country);
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> Details(int id)
+        {
+            var country = await _countryRepository.GetByIdAsync(id);
+
+            if (country == null)
+            {
+                return NotFound();
+            }
+
+            var countryDto = _mapper.Map<CountryDto>(country);
 
             return View(countryDto);
         }

@@ -6,6 +6,8 @@ using PaperCastle.Infrastructure.Data;
 using AutoMapper;
 using System.Text.Json.Serialization;
 using PaperCastle.Application.Dto;
+using System.IdentityModel.Tokens.Jwt;
+using PaperCastle.WebUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,28 @@ builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = "Cookies";
+    options.DefaultChallengeScheme = "oidc";
+})
+    .AddCookie("Cookies")
+    .AddOpenIdConnect("oidc", options =>
+    {
+        options.Authority = "https://localhost:7195"; //change port
+
+        options.ClientId = "web";
+        options.ClientSecret = "secret";
+        options.ResponseType = "code";
+
+        options.Scope.Clear();
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+    });
+
+HostingExtensions.ConfigureServices(builder);
 
 
 var app = builder.Build();
@@ -38,11 +62,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
+HostingExtensions.ConfigurePipeline(app);
 app.UseAuthorization();
 
 app.MapControllerRoute(

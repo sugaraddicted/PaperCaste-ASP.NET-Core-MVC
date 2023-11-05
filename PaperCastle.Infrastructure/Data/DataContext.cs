@@ -1,5 +1,5 @@
-﻿
-
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PaperCastle.Core;
 using PaperCastle.Core.Entity;
@@ -7,7 +7,7 @@ using PaperCastle.Infrastructure.Data.Configurations;
 
 namespace PaperCastle.Infrastructure.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -21,6 +21,9 @@ namespace PaperCastle.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new BookshelfConfiguration());
             modelBuilder.ApplyConfiguration(new BookshelfBookConfiguraion());
             modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(x => x.UserId);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasKey(x => x.UserId);
+            modelBuilder.Entity<IdentityUserToken<string>>().HasKey(x => x.UserId);
         }
 
         public DbSet<Book> Books { get; set; }

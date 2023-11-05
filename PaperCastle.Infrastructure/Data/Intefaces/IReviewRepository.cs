@@ -15,7 +15,7 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
 
         ICollection<Review> GetReviewsOfBook(int bookId);
 
-        ICollection<Review> GetUsersReviews(int userId);
+        ICollection<Review> GetUsersReviews(string userId);
 
         bool ReviewExists(int id);
 

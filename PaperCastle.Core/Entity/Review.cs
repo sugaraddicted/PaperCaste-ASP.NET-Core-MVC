@@ -13,7 +13,7 @@ namespace PaperCastle.Core.Entity
         public int BookId { get; set; } 
         public Book Book { get; set; }
         public int Rating { get; set; }
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
     }

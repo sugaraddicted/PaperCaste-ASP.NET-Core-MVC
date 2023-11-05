@@ -10,11 +10,11 @@ namespace PaperCastle.Infrastructure.Data.Intefaces
     public interface IApplicationUserRepository
     {
         ICollection<ApplicationUser> GetUsers();
-        ApplicationUser GetUserById(int id);
+        ApplicationUser GetUserById(string id);
 
-        ICollection<Bookshelf> GetUsersBookshelves(int userId);
+        ICollection<Bookshelf> GetUsersBookshelves(string userId);
 
-        bool UserExists(int id);
+        bool UserExists(string id);
 
         bool AddUser(ApplicationUser user);
 

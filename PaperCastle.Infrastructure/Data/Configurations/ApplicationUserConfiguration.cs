@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PaperCastle.Core.Entity;
+using System.Reflection.Emit;
 
 namespace PaperCastle.Infrastructure.Data.Configurations
 {
@@ -12,7 +13,8 @@ namespace PaperCastle.Infrastructure.Data.Configurations
                 .WithMany(x => x.ApplicationUsers)
                 .HasForeignKey(x => x.CountryId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasPrincipalKey(u=> u.Id);
 
             builder.HasMany(u => u.Friends)
                 .WithMany()

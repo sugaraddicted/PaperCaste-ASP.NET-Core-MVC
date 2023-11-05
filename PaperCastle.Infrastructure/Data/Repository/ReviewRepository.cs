@@ -50,7 +50,7 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return _context.Reviews.Where(r => r.Book.Id == bookId).ToList();
         }
 
-        public ICollection<Review> GetUsersReviews(int userId)
+        public ICollection<Review> GetUsersReviews(string userId)
         {
             return _context.Reviews.Where(r => r.ApplicationUserId == userId).ToList();
         }

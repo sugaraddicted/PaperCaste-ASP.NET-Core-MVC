@@ -26,7 +26,7 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return Save();
         }
 
-        public ApplicationUser GetUserById(int id)
+        public ApplicationUser GetUserById(string id)
         {
             return _context.ApplicationUsers.Where(a => a.Id == id).FirstOrDefault();
         }
@@ -36,7 +36,7 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return _context.ApplicationUsers.ToList();
         }
 
-        public ICollection<Bookshelf> GetUsersBookshelves(int userId)
+        public ICollection<Bookshelf> GetUsersBookshelves(string userId)
         {
             var user = _context.ApplicationUsers.Include(a => a.Bookshelves).FirstOrDefault(a => a.Id == userId);
             return user?.Bookshelves.ToList();
@@ -54,7 +54,7 @@ namespace PaperCastle.Infrastructure.Data.Repository
             return Save();
         }
 
-        public bool UserExists(int id)
+        public bool UserExists(string id)
         {
             return _context.ApplicationUsers.Any(a => a.Id == id);
         }

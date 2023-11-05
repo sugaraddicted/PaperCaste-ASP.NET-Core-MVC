@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace PaperCastle.Core.Entity
 {
-    public class ApplicationUser
+    public class ApplicationUser : IdentityUser<string>
     {
-        public int Id { get; set; }
+        public string Id {  get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

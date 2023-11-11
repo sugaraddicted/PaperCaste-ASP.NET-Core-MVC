@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PaperCastle.Infrastructure.Data.Configurations
 {
-    public class BookshelfBookConfiguraion : IEntityTypeConfiguration<BookshelfBook>
+    public class BookshelfBookConfiguration : IEntityTypeConfiguration<BookshelfBook>
     {
         public void Configure(EntityTypeBuilder<BookshelfBook> builder)
         {

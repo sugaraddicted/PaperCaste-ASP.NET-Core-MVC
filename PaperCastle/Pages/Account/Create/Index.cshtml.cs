@@ -6,45 +6,53 @@ using Duende.IdentityServer.Stores;
 using Duende.IdentityServer.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic;
+using PaperCastle.Core.Entity;
 using PaperCastle.WebUI.Pages;
+using System.Security.Claims;
 
-namespace PaperCastle.WebUI.Pages.Account.Create;
-
-[SecurityHeaders]
-[AllowAnonymous]
-public class Index : PageModel
+namespace PaperCastle.WebUI.Pages.Account.Create
 {
-    private readonly TestUserStore _users;
-    private readonly IIdentityServerInteractionService _interaction;
-
-    [BindProperty]
-    public InputModel Input { get; set; }
-
-    public Index(
-        IIdentityServerInteractionService interaction,
-        TestUserStore users = null)
+    [SecurityHeaders]
+    [AllowAnonymous]
+    public class Index : PageModel
     {
-        // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
-        _users = users ?? throw new Exception("Please call 'AddTestUsers(TestUsers.Users)' on the IIdentityServerBuilder in Startup or remove the TestUserStore from the AccountController.");
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IIdentityServerInteractionService _interaction;
+        private readonly TestUserStore _users;
 
-        _interaction = interaction;
-    }
+       [BindProperty]
+        public InputModel Input { get; set; }
 
-    public IActionResult OnGet(string? returnUrl = null)
-    {
-        Input = new InputModel { ReturnUrl = returnUrl };
-        return Page();
-    }
+        public Index(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IIdentityServerInteractionService interaction,
+            TestUserStore users)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _interaction = interaction;
+            _users = users;
+        }
 
-    public async Task<IActionResult> OnPost()
-    {
-        // check if we are in the context of an authorization request
-        var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
+        public IActionResult OnGet(string? returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            Input = new InputModel { ReturnUrl = returnUrl };
+            return Page();
+        }
 
-        // the user clicked the "cancel" button
-        if (Input.Button != "create")
+        public async Task<IActionResult> OnPost()
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
+
+
+             if (Input.Button != "create")
         {
             if (context != null)
             {
@@ -70,52 +78,48 @@ public class Index : PageModel
             }
         }
 
-        if (_users.FindByUsername(Input.Username) != null)
-        {
-            ModelState.AddModelError("Input.Username", "Invalid username");
-        }
-
-        if (ModelState.IsValid)
-        {
-            var user = _users.CreateUser(Input.Username, Input.Password, Input.Name, Input.Email);
-
-            // issue authentication cookie with subject ID and username
-            var isuser = new IdentityServerUser(user.SubjectId)
+            if (_users.FindByUsername(Input.Username) != null)
             {
-                DisplayName = user.Username
-            };
+                ModelState.AddModelError("Input.Username", "Invalid username");
+            }
 
-            await HttpContext.SignInAsync(isuser);
-
-            if (context != null)
+            if (ModelState.IsValid)
             {
-                if (context.IsNativeClient())
+                var user = new ApplicationUser
                 {
-                    // The client is native, so this change in how to
-                    // return the response is for better UX for the end user.
-                    return this.LoadingPage(Input.ReturnUrl);
+                    UserName = Input.Username,
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName
+                };
+
+                var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (result.Succeeded)
+                {
+                    // Sign in the user after creating the account
+                    var claims = new List<Claim>
+                    {
+                        new Claim("sub", user.Id)
+                         // other claims...
+                    };
+
+                    await _userManager.AddClaimsAsync(user, claims);
+                    await _signInManager.PasswordSignInAsync(user, Input.Password, false, lockoutOnFailure: false);
+
+                    // Redirect to the return URL or a default page
+                    return Redirect(string.IsNullOrEmpty(Input.ReturnUrl) ? "~/Home" : Input.ReturnUrl);
                 }
-
-                // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                return Redirect(Input.ReturnUrl);
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
             }
 
-            // request for a local page
-            if (Url.IsLocalUrl(Input.ReturnUrl))
-            {
-                return Redirect(Input.ReturnUrl);
-            }
-            else if (string.IsNullOrEmpty(Input.ReturnUrl))
-            {
-                return Redirect("~/");
-            }
-            else
-            {
-                // user might have clicked on a malicious link - should be logged
-                throw new Exception("invalid return URL");
-            }
+            return Page();
         }
-
-        return Page();
     }
 }

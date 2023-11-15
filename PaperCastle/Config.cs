@@ -4,11 +4,14 @@ using Duende.IdentityServer;
 public static class Config
 {
     public static IEnumerable<IdentityResource> IdentityResources =>
-        new IdentityResource[]
-        {
-            new IdentityResources.OpenId(),
+       new IdentityResource[]
+       {
+            new IdentityResources.OpenId()
+            {
+                UserClaims = { "sub" }
+            },
             new IdentityResources.Profile(),
-        };
+       };
 
     public static IEnumerable<ApiScope> ApiScopes =>
         new ApiScope[]

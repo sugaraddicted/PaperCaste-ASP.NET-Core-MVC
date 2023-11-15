@@ -1,14 +1,13 @@
 using Duende.IdentityServer.Configuration;
+using Microsoft.AspNetCore.Identity;
+using PaperCastle.Core.Entity;
+using PaperCastle.Infrastructure.Data;
 using PaperCastle.WebUI.Pages;
 
-namespace PaperCastle.WebUI;
-
-internal static class HostingExtensions
+public static class HostingExtensions
 {
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddRazorPages();
-
         builder.Services.AddIdentityServer(options =>
         {
             options.KeyManagement.Enabled = true;
@@ -24,10 +23,18 @@ internal static class HostingExtensions
             // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
             options.EmitStaticAudienceClaim = true;
         })
-            .AddTestUsers(TestUsers.Users)
-            .AddInMemoryIdentityResources(Config.IdentityResources)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients);
+        .AddTestUsers(TestUsers.Users)
+        .AddInMemoryIdentityResources(Config.IdentityResources)
+        .AddInMemoryApiScopes(Config.ApiScopes)
+        .AddInMemoryClients(Config.Clients);
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<DataContext>()
+        .AddDefaultTokenProviders()
+        .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<ApplicationUser>>();
+
+        IdentityConfig.ConfigureIdentity(builder);
+        builder.Services.AddRazorPages();
     }
 
     public static void ConfigurePipeline(this WebApplication app)
@@ -37,7 +44,7 @@ internal static class HostingExtensions
         app.UseStaticFiles();
         app.UseRouting();
         app.UseIdentityServer();
-
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapRazorPages()

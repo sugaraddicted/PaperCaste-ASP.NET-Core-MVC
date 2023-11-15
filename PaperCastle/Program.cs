@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using PaperCastle.Infrastructure.Data.Repository;
 using PaperCastle.Infrastructure.Data.Intefaces;
 using PaperCastle.Infrastructure.Data;
 using AutoMapper;
 using System.Text.Json.Serialization;
-using PaperCastle.Application.Dto;
 using System.IdentityModel.Tokens.Jwt;
-using PaperCastle.WebUI;
+using PaperCastle.Application.Dto;
+using PaperCastle.Core.Entity;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,10 +47,10 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Clear();
         options.Scope.Add("openid");
         options.Scope.Add("profile");
+        options.GetClaimsFromUserInfoEndpoint = true;
     });
 
 HostingExtensions.ConfigureServices(builder);
-
 
 var app = builder.Build();
 
@@ -63,7 +63,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 HostingExtensions.ConfigurePipeline(app);
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -13,13 +13,11 @@ namespace PaperCastle.Infrastructure.Data.Configurations
                 .WithMany(x => x.ApplicationUsers)
                 .HasForeignKey(x => x.CountryId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasPrincipalKey(u=> u.Id);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(u => u.Friends)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("UserFriends"));
-
         }
     }
 }

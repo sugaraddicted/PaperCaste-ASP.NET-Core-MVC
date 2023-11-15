@@ -9,7 +9,6 @@ namespace PaperCastle.Core.Entity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
         public int? CountryId { get; set; }
         public Country Country { get; set; }
         public ICollection<ApplicationUser> Friends { get; set; }
